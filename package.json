@@ -10,8 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/date-fns": "^2.6.0",
+    "@types/react-icons": "^3.0.0",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/styled-components": "^5.1.28",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.16.0",
+    "styled-components": "^6.0.8"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
