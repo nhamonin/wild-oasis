@@ -7,3 +7,5 @@ export type Cabin = {
   image: string;
   description: string;
 };
+
+export type CabinCreation = Omit<Cabin, 'id' | 'image'>;
