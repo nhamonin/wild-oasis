@@ -1,10 +1,10 @@
 import BookingRow from './BookingRow';
 import Table from '../../ui/Table';
 import Menus from '../../ui/Menus';
-import { Booking } from '../../types';
+import { PartialBooking } from '../../types';
 
 function BookingTable() {
-  const bookings: Booking[] = [];
+  const bookings: PartialBooking[] = [];
 
   return (
     <Menus>
@@ -20,7 +20,7 @@ function BookingTable() {
 
         <Table.Body
           data={bookings}
-          render={(booking) => <BookingRow key={booking.id} booking={booking} />}
+          render={(booking: PartialBooking) => <BookingRow key={booking.id} booking={booking} />}
         />
       </Table>
     </Menus>

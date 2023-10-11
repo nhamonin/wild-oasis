@@ -7,11 +7,11 @@ import Form from '../../ui/Form';
 import Button from '../../ui/Button';
 import FileInput from '../../ui/FileInput';
 import Textarea from '../../ui/Textarea';
-import { CabinCreation } from '../../types/data/Cabin';
-import { createCabin } from '../../services/apiCabins';
 import FormRow from '../../ui/FormRow';
+import { createCabin } from '../../services/apiCabins';
+import { Cabin } from '../../types';
 
-type FormInputs = CabinCreation & FieldValues;
+type FormInputs = Cabin & FieldValues;
 
 function CreateCabinForm() {
   const queryClient = useQueryClient();
@@ -27,7 +27,11 @@ function CreateCabinForm() {
     onError: (error: Error) => toast.error(error.message),
   });
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
-    mutate(data);
+    if (data.image && data.image[0]) {
+      mutate({ ...data, image: data.image[0] });
+    } else {
+      toast.error('Please provide an image for the cabin.');
+    }
   };
 
   return (
@@ -83,6 +87,12 @@ function CreateCabinForm() {
             required: 'This field is required',
             validate: (value) => {
               const currentRegularPrice = getValues('regular_price');
+              if (!value || value === null) {
+                return 'Value is required';
+              }
+              if (!currentRegularPrice || currentRegularPrice === null) {
+                return 'Regular price is missing';
+              }
               return (
                 value <= currentRegularPrice ||
                 'Discount should be less than or equal to the regular price'
@@ -104,7 +114,13 @@ function CreateCabinForm() {
       </FormRow>
 
       <FormRow label="Cabin photo">
-        <FileInput id="image" accept="image/*" />
+        <FileInput
+          id="image"
+          accept="image/*"
+          {...register('image', {
+            required: 'This field is required',
+          })}
+        />
       </FormRow>
 
       <FormRow>

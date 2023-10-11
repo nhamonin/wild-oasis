@@ -1,7 +1,5 @@
-export type Guest = {
-  fullName: string;
-  email: string;
-  nationality: string;
-  nationalID: string;
-  countryFlag: string;
-};
+import { Database } from '../supabase';
+
+export type Guest = Database['public']['Tables']['guests']['Row'];
+export type PartialGuest = Partial<Guest>;
+export type GuestCreation = Omit<Guest, 'id'>;

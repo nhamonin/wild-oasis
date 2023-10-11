@@ -1,11 +1,5 @@
-export type Cabin = {
-  id: string;
-  name: string;
-  max_capacity: number;
-  regular_price: number;
-  discount: number;
-  image: string;
-  description: string;
-};
+import { Database } from '../supabase';
 
-export type CabinCreation = Omit<Cabin, 'id' | 'image'>;
+export type Cabin = Database['public']['Tables']['cabins']['Row'];
+export type PartialCabin = Partial<Cabin>;
+export type CabinCreation = Omit<Cabin, 'id'>;

@@ -24,5 +24,10 @@ export const getToday = function ({ end = false }: { end?: boolean } = {}) {
   return today.toISOString();
 };
 
-export const formatCurrency = (value: number | bigint) =>
-  new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' }).format(value);
+export const formatCurrency = (value: number | null) => {
+  if (!value) {
+    return '';
+  }
+
+  return new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' }).format(value);
+};

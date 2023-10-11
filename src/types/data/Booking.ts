@@ -1,11 +1,5 @@
-export type Booking = {
-  created_at: string;
-  startDate: string;
-  endDate: string;
-  cabinId: number;
-  guestId: number;
-  hasBreakfast: boolean;
-  observations: string;
-  isPaid: boolean;
-  numGuests: number;
-};
+import { Database } from '../supabase';
+
+export type Booking = Database['public']['Tables']['bookings']['Row'];
+export type PartialBooking = Partial<Booking>;
+export type BookingCreation = Omit<Booking, 'id'>;
