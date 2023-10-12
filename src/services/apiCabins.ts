@@ -46,13 +46,15 @@ export async function createEditCabin(newCabin: CabinCreation, id?: number) {
 
   if (error || !insertedCabin) {
     console.error(error);
-    throw new Error('Cabins could not be created.');
+    throw new Error('Cabins could not be created or edited.');
   }
 
   if (!newCabin.image) {
     console.error('Image is missing');
     throw new Error('Cabin image is missing.');
   }
+
+  if (imageInDB) return insertedCabin;
 
   const { error: storageError } = await supabase.storage
     .from('cabin-images')

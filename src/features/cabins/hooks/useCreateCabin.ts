@@ -5,7 +5,7 @@ import { UseFormReset } from 'react-hook-form';
 import { createEditCabin as createEditCabinApi } from '../../../services/apiCabins';
 import { CabinFormInputs } from '../../../types';
 
-export function useCreateCabin(reset: UseFormReset<CabinFormInputs>, onFormClose: () => void) {
+export function useCreateCabin(reset?: UseFormReset<CabinFormInputs>, onFormClose?: () => void) {
   const queryClient = useQueryClient();
 
   const { mutate: createCabin, isLoading: isCreating } = useMutation({
@@ -13,8 +13,8 @@ export function useCreateCabin(reset: UseFormReset<CabinFormInputs>, onFormClose
     onSuccess: () => {
       toast.success('New cabin successfully created!');
       queryClient.invalidateQueries(['cabins']);
-      reset();
-      onFormClose();
+      reset && reset();
+      onFormClose && onFormClose();
     },
     onError: (error: Error) => toast.error(error.message),
   });
