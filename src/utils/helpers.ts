@@ -25,9 +25,5 @@ export const getToday = function ({ end = false }: { end?: boolean } = {}) {
 };
 
 export const formatCurrency = (value: number | null) => {
-  if (!value) {
-    return '';
-  }
-
-  return new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' }).format(value);
+  return new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' }).format(value || 0);
 };

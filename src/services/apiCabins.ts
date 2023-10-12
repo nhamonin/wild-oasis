@@ -2,7 +2,10 @@ import supabase, { supabaseUrl } from './supabase';
 import { CabinCreation } from '../types';
 
 export async function getCabins() {
-  const { data, error } = await supabase.from('cabins').select('*');
+  const { data, error } = await supabase
+    .from('cabins')
+    .select('*')
+    .order('created_at', { ascending: true });
 
   if (error) {
     console.error(error);
@@ -12,21 +15,39 @@ export async function getCabins() {
   return data;
 }
 
-export async function createCabin(newCabin: CabinCreation) {
+export async function createEditCabin(newCabin: CabinCreation, id?: number) {
+  const imageInDB = newCabin.image?.startsWith?.(supabaseUrl);
   const imageName = `${Math.random()}-${newCabin.name}.jpg`.replaceAll('/', '');
-  const imagePath = `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
+  const imagePath = imageInDB
+    ? newCabin.image
+    : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
 
-  const { data, error } = await supabase
-    .from('')
-    .insert([{ ...newCabin, image: imagePath }])
-    .select('*');
+  let insertedCabin;
+  let error;
 
-  if (error || !data) {
+  // for creating a new cabin
+  if (!id) {
+    ({ data: insertedCabin, error } = await supabase
+      .from('cabins')
+      .insert([{ ...newCabin, image: imagePath }])
+      .select()
+      .single());
+  }
+
+  // for editing a cabin
+  if (id) {
+    ({ data: insertedCabin, error } = await supabase
+      .from('cabins')
+      .update({ ...newCabin, image: imagePath })
+      .eq('id', id)
+      .select()
+      .single());
+  }
+
+  if (error || !insertedCabin) {
     console.error(error);
     throw new Error('Cabins could not be created.');
   }
-
-  const insertedCabin = data[0];
 
   if (!newCabin.image) {
     console.error('Image is missing');
