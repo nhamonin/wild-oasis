@@ -1,6 +1,4 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
 
 import Input from '../../ui/Input';
 import Form from '../../ui/Form';
@@ -8,8 +6,9 @@ import Button from '../../ui/Button';
 import FileInput from '../../ui/FileInput';
 import Textarea from '../../ui/Textarea';
 import FormRow from '../../ui/FormRow';
-import { createEditCabin } from '../../services/apiCabins';
-import { Cabin, CabinFormInputs, EditCabinArgs } from '../../types';
+import { Cabin, CabinFormInputs } from '../../types';
+import { useCreateCabin } from './hooks/useCreateCabin';
+import { useEditCabin } from './hooks/useEditCabin';
 
 type CreateCabinFormProps = {
   cabinToEdit?: Cabin | Record<string, never>;
@@ -22,32 +21,10 @@ function CreateEditCabinForm({ cabinToEdit = {}, onFormClose }: CreateCabinFormP
   const { register, handleSubmit, reset, getValues, formState } = useForm<CabinFormInputs>({
     defaultValues: isEditSession ? editValues : {},
   });
-  const { errors } = formState;
-  const queryClient = useQueryClient();
-
-  const { mutate: createCabin, isLoading: isCreating } = useMutation({
-    mutationFn: createEditCabin,
-    onSuccess: () => {
-      toast.success('New cabin successfully created!');
-      queryClient.invalidateQueries(['cabins']);
-      reset();
-      onFormClose();
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
-
-  const { mutate: editCabin, isLoading: isEditing } = useMutation({
-    mutationFn: ({ newCabinData, id }: EditCabinArgs) => createEditCabin(newCabinData, id),
-    onSuccess: () => {
-      toast.success('Cabin successfully edited!');
-      queryClient.invalidateQueries(['cabins']);
-      reset();
-      onFormClose();
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
-
+  const { createCabin, isCreating } = useCreateCabin(reset, onFormClose);
+  const { editCabin, isEditing } = useEditCabin(reset, onFormClose);
   const isWorking = isCreating || isEditing;
+  const { errors } = formState;
 
   const onSubmit: SubmitHandler<CabinFormInputs> = (data) => {
     const image = typeof data.image === 'string' ? data.image : data.image?.[0] ?? null;
