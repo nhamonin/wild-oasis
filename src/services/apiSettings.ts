@@ -8,6 +8,7 @@ export async function getSettings() {
     console.error(error);
     throw new Error('Settings could not be loaded');
   }
+
   return data;
 }
 
@@ -24,5 +25,6 @@ export async function updateSetting(newSetting: { [K in keyof Settings]?: Settin
     console.error(error);
     throw new Error('Settings could not be updated');
   }
+
   return data;
 }
