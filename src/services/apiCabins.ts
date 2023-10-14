@@ -15,7 +15,7 @@ export async function getCabins() {
   return data;
 }
 
-export async function createEditCabin(newCabin: CabinCreation, id?: number) {
+export async function createUpdateCabin(newCabin: CabinCreation, id?: number) {
   const imageInDB = newCabin.image?.startsWith?.(supabaseUrl);
   const imageName = `${Math.random()}-${newCabin.name}.jpg`.replaceAll('/', '');
   const imagePath = imageInDB
@@ -34,7 +34,7 @@ export async function createEditCabin(newCabin: CabinCreation, id?: number) {
       .single());
   }
 
-  // for editing a cabin
+  // for updating a cabin
   if (id) {
     ({ data: insertedCabin, error } = await supabase
       .from('cabins')
@@ -46,7 +46,7 @@ export async function createEditCabin(newCabin: CabinCreation, id?: number) {
 
   if (error || !insertedCabin) {
     console.error(error);
-    throw new Error('Cabins could not be created or edited.');
+    throw new Error('Cabins could not be created or updated.');
   }
 
   if (!newCabin.image) {

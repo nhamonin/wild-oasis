@@ -4,7 +4,7 @@ export type {
   PartialCabin,
   CabinCreation,
   CabinFormInputs,
-  EditCabinArgs,
+  UpdateCabinArgs,
 } from './data/Cabin';
 export type { Guest, PartialGuest, GuestCreation } from './data/Guest';
 export type { Settings, SettingsToUpdate } from './data/Settings';
