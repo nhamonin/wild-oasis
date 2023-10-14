@@ -12,17 +12,17 @@ import { useUpdateCabin } from './hooks/useUpdateCabin';
 
 type CreateCabinFormProps = {
   cabinToUpdate?: Cabin | Record<string, never>;
-  onFormClose: () => void;
+  onClose: () => void;
 };
 
-function CreateUpdateCabinForm({ cabinToUpdate = {}, onFormClose }: CreateCabinFormProps) {
+function CreateUpdateCabinForm({ cabinToUpdate = {}, onClose }: CreateCabinFormProps) {
   const { id: updateId, ...updateValues } = cabinToUpdate;
   const isUpdateSession = !!updateId;
   const { register, handleSubmit, reset, getValues, formState } = useForm<CabinFormInputs>({
     defaultValues: isUpdateSession ? updateValues : {},
   });
-  const { createCabin, isCreating } = useCreateCabin(reset, onFormClose);
-  const { updateCabin, isUpdating } = useUpdateCabin(reset, onFormClose);
+  const { createCabin, isCreating } = useCreateCabin(reset, onClose);
+  const { updateCabin, isUpdating } = useUpdateCabin(reset, onClose);
   const isWorking = isCreating || isUpdating;
   const { errors } = formState;
 
@@ -132,7 +132,7 @@ function CreateUpdateCabinForm({ cabinToUpdate = {}, onFormClose }: CreateCabinF
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset" disabled={isWorking}>
+        <Button variation="secondary" type="reset" disabled={isWorking} onClick={onClose}>
           Cancel
         </Button>
         <Button disabled={isWorking}>{isUpdateSession ? 'Update' : 'Create new'} cabin</Button>

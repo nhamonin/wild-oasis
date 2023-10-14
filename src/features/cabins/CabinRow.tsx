@@ -85,7 +85,7 @@ function CabinRow({ cabin }: { cabin: Cabin }) {
         </div>
       </TableRow>
       {showForm && (
-        <CreateUpdateCabinForm cabinToUpdate={cabin} onFormClose={() => setShowForm(false)} />
+        <CreateUpdateCabinForm cabinToUpdate={cabin} onClose={() => setShowForm(false)} />
       )}
     </>
   );
