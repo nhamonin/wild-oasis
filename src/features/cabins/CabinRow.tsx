@@ -4,7 +4,7 @@ import { HiPencil, HiSquare2Stack, HiTrash } from 'react-icons/hi2';
 import { formatCurrency } from '../../utils/helpers';
 import { Cabin } from '../../types';
 import { useState } from 'react';
-import CreateEditCabinForm from './CreateEditCabinForm';
+import CreateUpdateCabinForm from './CreateUpdateCabinForm';
 import { useDeleteCabin } from './hooks/useDeleteCabin';
 import { useCreateCabin } from './hooks/useCreateCabin';
 
@@ -85,7 +85,7 @@ function CabinRow({ cabin }: { cabin: Cabin }) {
         </div>
       </TableRow>
       {showForm && (
-        <CreateEditCabinForm cabinToEdit={cabin} onFormClose={() => setShowForm(false)} />
+        <CreateUpdateCabinForm cabinToUpdate={cabin} onFormClose={() => setShowForm(false)} />
       )}
     </>
   );
