@@ -84,8 +84,12 @@ function Header({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Body({ children }: { children: React.ReactNode }) {
-  return <StyledBody>{children}</StyledBody>;
+function Body<T>({ data, render }: { data: T[]; render: (item: T) => JSX.Element }) {
+  if (!data.length) {
+    return <Empty>No data to show at the moment</Empty>;
+  }
+
+  return <StyledBody>{data.map(render)}</StyledBody>;
 }
 
 function Row({ children }: { children: React.ReactNode }) {
