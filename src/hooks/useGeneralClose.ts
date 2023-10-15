@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-export function useModalGeneralClose(onClose: () => void) {
-  const ref = useRef<HTMLDivElement>(null);
+export function useGeneralClose<T extends HTMLElement>(onClose: () => void) {
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {

@@ -2,7 +2,8 @@ import { ReactElement, ReactNode, cloneElement, createContext, useContext, useSt
 import { createPortal } from 'react-dom';
 import { HiXMark } from 'react-icons/hi2';
 import styled from 'styled-components';
-import { useModalGeneralClose } from '../hooks/useModalGeneralClose';
+
+import { useGeneralClose } from '../hooks/useGeneralClose';
 
 const StyledModal = styled.div`
   position: fixed;
@@ -77,7 +78,7 @@ function Open({ children, opens: opensWindowName }: { children: ReactElement; op
 
   return cloneElement(children, {
     onClick: (event: React.MouseEvent<HTMLElement>) => {
-      event.preventDefault();
+      event?.preventDefault();
       open(opensWindowName);
       return;
     },
@@ -86,7 +87,7 @@ function Open({ children, opens: opensWindowName }: { children: ReactElement; op
 
 function Window({ children, name }: { children: ReactElement; name: string }) {
   const { openName, close: onClose } = useContext(ModalContext) as ModalContextProps;
-  const ref = useModalGeneralClose(onClose);
+  const ref = useGeneralClose<HTMLDivElement>(onClose);
 
   if (name !== openName) return null;
 
