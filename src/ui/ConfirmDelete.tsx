@@ -23,10 +23,11 @@ const StyledConfirmDelete = styled.div`
 type ConfirmDeleteProps = {
   resourceName: string;
   onConfirm: () => void;
+  onClose?: () => void;
   disabled?: boolean;
 };
 
-function ConfirmDelete({ resourceName, onConfirm, disabled }: ConfirmDeleteProps) {
+function ConfirmDelete({ resourceName, onConfirm, disabled, onClose }: ConfirmDeleteProps) {
   return (
     <StyledConfirmDelete>
       <Heading as="h3">Delete {resourceName}</Heading>
@@ -36,10 +37,10 @@ function ConfirmDelete({ resourceName, onConfirm, disabled }: ConfirmDeleteProps
       </p>
 
       <div>
-        <Button variation="secondary" disabled={disabled}>
+        <Button variation="secondary" disabled={disabled} onClick={onClose}>
           Cancel
         </Button>
-        <Button variation="danger" disabled={disabled}>
+        <Button variation="danger" disabled={disabled} onClick={onConfirm}>
           Delete
         </Button>
       </div>

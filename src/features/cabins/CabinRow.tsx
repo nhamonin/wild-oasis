@@ -5,7 +5,9 @@ import { formatCurrency } from '../../utils/helpers';
 import { Cabin } from '../../types';
 import { useDeleteCabin } from './hooks/useDeleteCabin';
 import { useCreateCabin } from './hooks/useCreateCabin';
-import AddUpdateCabin from './AddUpdateCabin';
+import CreateUpdateCabinForm from './CreateUpdateCabinForm';
+import Modal from '../../ui/Modal';
+import ConfirmDelete from '../../ui/ConfirmDelete';
 
 const TableRow = styled.div`
   display: grid;
@@ -74,17 +76,31 @@ function CabinRow({ cabin }: { cabin: Cabin }) {
           <button disabled={isCreating} onClick={() => handleDuplicateCabin()}>
             <HiSquare2Stack />
           </button>
-          <AddUpdateCabin
-            cabin={cabin}
-            CustomButton={
+          <Modal>
+            <Modal.Open opens="edit">
               <button>
                 <HiPencil />
               </button>
-            }
-          />
-          <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}>
-            <HiTrash />
-          </button>
+            </Modal.Open>
+            <Modal.Window name="edit">
+              <CreateUpdateCabinForm cabinToUpdate={cabin} />
+            </Modal.Window>
+          </Modal>
+
+          <Modal>
+            <Modal.Open opens="delete">
+              <button>
+                <HiTrash />
+              </button>
+            </Modal.Open>
+            <Modal.Window name="delete">
+              <ConfirmDelete
+                resourceName="cabins"
+                disabled={isDeleting}
+                onConfirm={() => deleteCabin(cabinId)}
+              />
+            </Modal.Window>
+          </Modal>
         </div>
       </TableRow>
     </>
