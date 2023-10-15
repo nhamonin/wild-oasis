@@ -12,7 +12,7 @@ import { useUpdateCabin } from './hooks/useUpdateCabin';
 
 type CreateCabinFormProps = {
   cabinToUpdate?: Cabin | Record<string, never>;
-  onClose: () => void;
+  onClose?: () => void;
 };
 
 function CreateUpdateCabinForm({ cabinToUpdate = {}, onClose }: CreateCabinFormProps) {

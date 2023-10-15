@@ -1,7 +1,7 @@
 import Heading from '../ui/Heading';
 import Row from '../ui/Row';
 import CabinTable from '../features/cabins/CabinTable';
-import AddCabin from '../features/cabins/AddCabin';
+import AddUpdateCabin from '../features/cabins/AddUpdateCabin';
 
 function Cabins() {
   return (
@@ -13,7 +13,7 @@ function Cabins() {
 
       <Row>
         <CabinTable />
-        <AddCabin />
+        <AddUpdateCabin buttonText="Add new cabin!" />
       </Row>
     </>
   );
