@@ -1,15 +1,8 @@
-import {
-  MouseEvent,
-  ReactElement,
-  ReactNode,
-  cloneElement,
-  createContext,
-  useContext,
-  useState,
-} from 'react';
+import { ReactElement, ReactNode, cloneElement, createContext, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { HiXMark } from 'react-icons/hi2';
 import styled from 'styled-components';
+import { useModalGeneralClose } from '../hooks/useModalGeneralClose';
 
 const StyledModal = styled.div`
   position: fixed;
@@ -83,7 +76,7 @@ function Open({ children, opens: opensWindowName }: { children: ReactElement; op
   const { open } = useContext(ModalContext) as ModalContextProps;
 
   return cloneElement(children, {
-    onClick: (event: MouseEvent<HTMLElement>) => {
+    onClick: (event: React.MouseEvent<HTMLElement>) => {
       event.preventDefault();
       open(opensWindowName);
       return;
@@ -93,12 +86,13 @@ function Open({ children, opens: opensWindowName }: { children: ReactElement; op
 
 function Window({ children, name }: { children: ReactElement; name: string }) {
   const { openName, close: onClose } = useContext(ModalContext) as ModalContextProps;
+  const ref = useModalGeneralClose(onClose);
 
   if (name !== openName) return null;
 
   return createPortal(
     <Overlay>
-      <StyledModal>
+      <StyledModal ref={ref}>
         <Button onClick={onClose}>
           <HiXMark />
         </Button>
