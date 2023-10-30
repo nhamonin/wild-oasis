@@ -10,3 +10,4 @@ export type UpdateCabinArgs = {
   newCabinData: CabinFormInputs;
   id: number;
 };
+export type SortableCabinFields = keyof Omit<Cabin, 'id' | 'created_at'>;

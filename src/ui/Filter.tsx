@@ -68,6 +68,7 @@ function Filter<OptionValues extends string>({ filterField, options }: FilterPro
         <FilterButton
           key={option.value}
           $active={currentFilterType === option.value}
+          disabled={currentFilterType === option.value}
           onClick={() => handleClick(option.value)}
         >
           {option.label}

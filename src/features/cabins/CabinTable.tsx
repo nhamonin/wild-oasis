@@ -5,7 +5,7 @@ import Spinner from '../../ui/Spinner';
 import Menus from '../../ui/Menus';
 import Table from '../../ui/Table';
 import CabinRow from './CabinRow';
-import { Cabin } from '../../types';
+import { Cabin, SortableCabinFields } from '../../types';
 
 function CabinTable() {
   const { isLoading, cabins } = useCabins();
@@ -30,6 +30,25 @@ function CabinTable() {
     filteredCabins = cabins.filter((cabin) => cabin.discount === 0);
   }
 
+  const sortByValue = searchParams.get('sort_by') || 'name-asc';
+  const [field, direction] = sortByValue.split('-') as [SortableCabinFields, 'asc' | 'desc'];
+  const modifier = direction === 'asc' ? 1 : -1;
+
+  const sortedCabins = filteredCabins.sort((a, b) => {
+    const aValue = a[field];
+    const bValue = b[field];
+
+    if (typeof aValue === 'number' && typeof bValue === 'number') {
+      return (aValue - bValue) * modifier;
+    }
+
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return aValue.localeCompare(bValue) * modifier;
+    }
+
+    return 0;
+  });
+
   return (
     <Menus>
       <Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
@@ -43,7 +62,7 @@ function CabinTable() {
         </Table.Header>
 
         <Table.Body<Cabin>
-          data={filteredCabins}
+          data={sortedCabins}
           render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
         />
       </Table>
