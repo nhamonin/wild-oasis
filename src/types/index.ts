@@ -1,4 +1,4 @@
-export type { Booking, PartialBooking, BookingCreation } from './data/Booking';
+export type { Booking, FullBooking, PartialBooking, BookingCreation } from './data/Booking';
 export type {
   Cabin,
   PartialCabin,

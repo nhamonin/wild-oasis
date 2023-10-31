@@ -26,7 +26,7 @@ function BookingDetail() {
     unconfirmed: 'blue',
     'checked-in': 'green',
     'checked-out': 'silver',
-  };
+  } as const;
 
   return (
     <>
