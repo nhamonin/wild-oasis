@@ -1,6 +1,6 @@
 import { add } from 'date-fns';
 
-import { Booking } from '../types';
+import { PartialBooking } from '../types';
 
 function fromToday(numDays: number, withTime = false) {
   const date = add(new Date(), { days: numDays });
@@ -8,7 +8,7 @@ function fromToday(numDays: number, withTime = false) {
   return date.toISOString().slice(0, -1);
 }
 
-export const bookings: Partial<Booking>[] = [
+export const bookings: PartialBooking[] = [
   {
     created_at: fromToday(-20, true),
     start_date: fromToday(0),

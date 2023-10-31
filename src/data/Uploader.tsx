@@ -41,45 +41,46 @@ async function createCabins() {
 }
 
 async function createBookings() {
-  // Bookings need a guestId and a cabinId. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and cabinIds, and then replace the original IDs in the booking data with the actual ones from the DB
+  // Bookings need a guestId and a cabin_id. We can't tell Supabase IDs for each object, it will calculate them on its own. So it might be different for different people, especially after multiple uploads. Therefore, we need to first get all guestIds and cabin_ids, and then replace the original IDs in the booking data with the actual ones from the DB
   const { data: guestsIds } = await supabase.from('guests').select('id').order('id');
-  const allGuestIds = guestsIds.map((cabin) => cabin.id);
+  const allGuestIds = guestsIds?.map((cabin) => cabin.id);
   const { data: cabinsIds } = await supabase.from('cabins').select('id').order('id');
-  const allCabinIds = cabinsIds.map((cabin) => cabin.id);
+  const allCabinIds = cabinsIds?.map((cabin) => cabin.id);
 
   const finalBookings = bookings.map((booking) => {
     // Here relying on the order of cabins, as they don't have and ID yet
-    const cabin = cabins.at(booking.cabinId - 1);
-    const numNights = subtractDates(booking.endDate, booking.startDate);
-    const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
-    const extrasPrice = booking.hasBreakfast ? numNights * 15 * booking.numGuests : 0; // hardcoded breakfast price
+    const cabin = cabins.at(booking.cabin_id! - 1);
+
+    if (!cabin) throw new Error(`Cabin with ID ${booking.cabin_id} not found`);
+
+    const numNights = subtractDates(booking.end_date!, booking.start_date!);
+    const cabinPrice = numNights * (cabin.regular_price! - cabin.discount!);
+    const extrasPrice = booking.has_breakfast ? numNights * 15 * booking.num_guests! : 0;
     const totalPrice = cabinPrice + extrasPrice;
 
     let status;
-    if (isPast(new Date(booking.endDate)) && !isToday(new Date(booking.endDate)))
+    if (isPast(new Date(booking.end_date!)) && !isToday(new Date(booking.end_date!)))
       status = 'checked-out';
-    if (isFuture(new Date(booking.startDate)) || isToday(new Date(booking.startDate)))
+    if (isFuture(new Date(booking.start_date!)) || isToday(new Date(booking.start_date!)))
       status = 'unconfirmed';
     if (
-      (isFuture(new Date(booking.endDate)) || isToday(new Date(booking.endDate))) &&
-      isPast(new Date(booking.startDate)) &&
-      !isToday(new Date(booking.startDate))
+      (isFuture(new Date(booking.end_date!)) || isToday(new Date(booking.end_date!))) &&
+      isPast(new Date(booking.start_date!)) &&
+      !isToday(new Date(booking.start_date!))
     )
       status = 'checked-in';
 
     return {
       ...booking,
-      numNights,
-      cabinPrice,
-      extrasPrice,
-      totalPrice,
-      guestId: allGuestIds.at(booking.guestId - 1),
-      cabinId: allCabinIds.at(booking.cabinId - 1),
+      num_nights: numNights,
+      cabin_price: cabinPrice,
+      extras_price: extrasPrice,
+      total_price: totalPrice,
+      guest_id: allGuestIds?.at(booking.guest_id! - 1),
+      cabin_id: allCabinIds?.at(booking.cabin_id! - 1),
       status,
     };
   });
-
-  console.log(finalBookings);
 
   const { error } = await supabase.from('bookings').insert(finalBookings);
   if (error) console.log(error.message);
