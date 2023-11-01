@@ -9,7 +9,7 @@ export function useBookings() {
   const filterValue = searchParams.get('status');
   const filter = !filterValue || filterValue === 'all' ? null : { field: 'status', value: filterValue };
 
-  const [sortByValue, sortByMethod] = searchParams.get('sort_by')?.split('-') ?? [];
+  const [sortByValue, sortByMethod] = searchParams.get('sort_by')?.split('-') ?? ['start_date', 'desc'];
   const sortBy = !sortByValue ? null : { field: sortByValue, method: sortByMethod as 'asc' | 'desc' };
 
   const { isLoading, data: bookings, error } = useQuery(
