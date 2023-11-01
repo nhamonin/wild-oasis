@@ -2,11 +2,50 @@ import { getToday } from '../utils/helpers';
 import supabase from './supabase';
 import { Booking } from '../types';
 
-export async function getBookings() {
-  const { data, error } = await supabase
+type Filter = {
+  method?: 'eq' | 'gt' | 'lt' | 'gte' | 'lte';
+  field: string;
+  value: string;
+} | null;
+
+type SortBy = {
+  field: string;
+  method: 'asc' | 'desc';
+} | null;
+
+export async function getBookings({ filter, sortBy }: { filter: Filter; sortBy: SortBy }) {
+  let query = supabase
     .from('bookings')
-    .select('*, cabins(*), guests(*)')
-    .order('created_at', { ascending: false });
+    .select('*, cabins(*), guests(*)');
+
+  if (filter !== null) {
+    switch (filter.method) {
+      case 'eq':
+        query = query.eq(filter.field, filter.value);
+        break;
+      case 'gt':
+        query = query.gt(filter.field, filter.value);
+        break;
+      case 'lt':
+        query = query.lt(filter.field, filter.value);
+        break;
+      case 'gte':
+        query = query.gte(filter.field, filter.value);
+        break;
+      case 'lte':
+        query = query.lte(filter.field, filter.value);
+        break;
+      default:
+        query = query.eq(filter.field, filter.value);
+        break;
+    }
+  }
+
+  if (sortBy !== null) {
+    query = query.order(sortBy.field, { ascending: sortBy.method === 'asc' });
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error(error);
