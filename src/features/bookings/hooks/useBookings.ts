@@ -12,10 +12,20 @@ export function useBookings() {
   const [sortByValue, sortByMethod] = searchParams.get('sort_by')?.split('-') ?? ['start_date', 'desc'];
   const sortBy = !sortByValue ? null : { field: sortByValue, method: sortByMethod as 'asc' | 'desc' };
 
-  const { isLoading, data: bookings, error } = useQuery(
-    ['bookings', filter, sortBy],
-    () => getBookings({ filter, sortBy })
+  const page = Number(searchParams.get('page')) || 1;
+
+  const { isLoading, data, error } = useQuery(
+    ['bookings', filter, sortBy, page],
+    () => getBookings({ filter, sortBy, page }),
+    {
+      select: (response) => {
+        return {
+          bookings: response?.data,
+          count: response?.count,
+        };
+      },
+    }
   );
 
-  return { isLoading, bookings, error };
+  return { isLoading, bookings: data?.bookings, count: data?.count, error };
 }

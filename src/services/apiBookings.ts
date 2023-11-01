@@ -1,6 +1,7 @@
-import { getToday } from '../utils/helpers';
 import supabase from './supabase';
 import { Booking } from '../types';
+import { getToday } from '../utils/helpers';
+import { PAGE_SIZE } from '../utils/constants';
 
 type Filter = {
   method?: 'eq' | 'gt' | 'lt' | 'gte' | 'lte';
@@ -13,10 +14,10 @@ type SortBy = {
   method: 'asc' | 'desc';
 } | null;
 
-export async function getBookings({ filter, sortBy }: { filter: Filter; sortBy: SortBy }) {
+export async function getBookings({ filter, sortBy, page }: { filter: Filter; sortBy: SortBy, page: number }) {
   let query = supabase
     .from('bookings')
-    .select('*, cabins(*), guests(*)');
+    .select('*, cabins(*), guests(*)', { count: 'exact' });
 
   if (filter !== null) {
     switch (filter.method) {
@@ -45,14 +46,18 @@ export async function getBookings({ filter, sortBy }: { filter: Filter; sortBy: 
     query = query.order(sortBy.field, { ascending: sortBy.method === 'asc' });
   }
 
-  const { data, error } = await query;
+  if (page) {
+    query = query.range((page - 1) * PAGE_SIZE, page * PAGE_SIZE - 1);
+  }
+
+  const { data, count, error } = await query;
 
   if (error) {
     console.error(error);
     throw new Error('Bookings could not get loaded');
   }
 
-  return data;
+  return { data, count };
 }
 
 export async function getBooking(id: string) {
