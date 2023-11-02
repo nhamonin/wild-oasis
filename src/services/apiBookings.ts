@@ -129,7 +129,7 @@ export async function getStaysTodayActivity() {
   return data;
 }
 
-export async function updateBooking(id: string, obj: Partial<Booking>) {
+export async function updateBooking(id: number, obj: Partial<Booking>) {
   const { data, error } = await supabase
     .from('bookings')
     .update(obj)
