@@ -9,8 +9,8 @@ import {
 
 import DataItem from '../../ui/DataItem';
 import { Flag } from '../../ui/Flag';
-
 import { formatDistanceFromNow, formatCurrency } from '../../utils/helpers';
+import { FullBooking } from '../../types';
 
 const StyledBookingDataBox = styled.section`
   /* Box */
@@ -68,7 +68,11 @@ const Guest = styled.div`
   }
 `;
 
-const Price = styled.div`
+type PriceProps = {
+  isPaid: boolean | null;
+};
+
+const Price = styled.div<PriceProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -101,22 +105,37 @@ const Footer = styled.footer`
 `;
 
 // A purely presentational component
-function BookingDataBox({ booking }) {
+function BookingDataBox({ booking }: { booking: FullBooking }) {
   const {
     created_at,
-    startDate,
-    endDate,
-    numNights,
-    numGuests,
-    cabinPrice,
-    extrasPrice,
-    totalPrice,
-    hasBreakfast,
+    start_date,
+    end_date,
+    num_nights,
+    num_guests,
+    cabin_price,
+    extras_price,
+    total_price,
+    has_breakfast,
     observations,
-    isPaid,
-    guests: { fullName: guestName, email, country, countryFlag, nationalID },
-    cabins: { name: cabinName },
+    is_paid,
+    guests,
+    cabins,
   } = booking;
+  const guestsData = guests || {};
+  const {
+    full_name: guestName = '',
+    email = '',
+    country = '',
+    country_flag = '',
+    national_id = '',
+  } = guestsData as {
+    full_name?: string | null;
+    email?: string | null;
+    country?: string;
+    country_flag?: string | null;
+    national_id?: string | null;
+  };
+  const cabinName = cabins?.name || '';
 
   return (
     <StyledBookingDataBox>
@@ -124,27 +143,33 @@ function BookingDataBox({ booking }) {
         <div>
           <HiOutlineHomeModern />
           <p>
-            {numNights} nights in Cabin <span>{cabinName}</span>
+            {num_nights} nights in Cabin <span>{cabinName}</span>
           </p>
         </div>
 
         <p>
-          {format(new Date(startDate), 'EEE, MMM dd yyyy')} (
-          {isToday(new Date(startDate)) ? 'Today' : formatDistanceFromNow(startDate)}) &mdash;{' '}
-          {format(new Date(endDate), 'EEE, MMM dd yyyy')}
+          {start_date ? (
+            <>
+              {format(new Date(start_date), 'EEE, MMM dd yyyy')} (
+              {isToday(new Date(start_date)) ? 'Today' : formatDistanceFromNow(start_date)}) &mdash;{' '}
+              {end_date ? format(new Date(end_date), 'EEE, MMM dd yyyy') : 'N/A'}
+            </>
+          ) : (
+            'Dates not available'
+          )}
         </p>
       </Header>
 
       <Section>
         <Guest>
-          {countryFlag && <Flag src={countryFlag} alt={`Flag of ${country}`} />}
+          {country_flag && <Flag src={country_flag} alt={`Flag of ${country}`} />}
           <p>
-            {guestName} {numGuests > 1 ? `+ ${numGuests - 1} guests` : ''}
+            {guestName} {num_guests || 0 > 1 ? `+ ${(num_guests || 0) - 1} guests` : ''}
           </p>
           <span>&bull;</span>
           <p>{email}</p>
           <span>&bull;</span>
-          <p>National ID {nationalID}</p>
+          <p>National ID {national_id}</p>
         </Guest>
 
         {observations && (
@@ -154,18 +179,18 @@ function BookingDataBox({ booking }) {
         )}
 
         <DataItem icon={<HiOutlineCheckCircle />} label="Breakfast included?">
-          {hasBreakfast ? 'Yes' : 'No'}
+          {has_breakfast ? 'Yes' : 'No'}
         </DataItem>
 
-        <Price isPaid={isPaid}>
+        <Price isPaid={is_paid}>
           <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
-            {formatCurrency(totalPrice)}
+            {formatCurrency(total_price)}
 
-            {hasBreakfast &&
-              ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(extrasPrice)} breakfast)`}
+            {has_breakfast &&
+              ` (${formatCurrency(cabin_price)} cabin + ${formatCurrency(extras_price)} breakfast)`}
           </DataItem>
 
-          <p>{isPaid ? 'Paid' : 'Will pay at property'}</p>
+          <p>{is_paid ? 'Paid' : 'Will pay at property'}</p>
         </Price>
       </Section>
 

@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 import { format, isToday } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import { HiEye } from 'react-icons/hi2';
 
 import Tag from '../../ui/Tag';
 import Table from '../../ui/Table';
+import Menus from '../../ui/Menus';
 import { formatCurrency } from '../../utils/helpers';
 import { formatDistanceFromNow } from '../../utils/helpers';
 import { FullBooking } from '../../types';
@@ -34,29 +37,20 @@ const Amount = styled.div`
   font-weight: 500;
 `;
 
-function BookingRow({
-  booking
-}: { booking: FullBooking }) {
-  const {
-    start_date,
-    end_date,
-    num_nights,
-    total_price,
-    status,
-    guests,
-    cabins,
-  } = booking;
+function BookingRow({ booking }: { booking: FullBooking }) {
+  const { start_date, end_date, num_nights, total_price, status, guests, cabins, id } = booking;
+  const navigate = useNavigate();
 
-  const guestName = guests?.full_name || "N/A";
-  const email = guests?.email || "N/A";
-  const cabinName = cabins?.name || "N/A";
+  const guestName = guests?.full_name || 'N/A';
+  const email = guests?.email || 'N/A';
+  const cabinName = cabins?.name || 'N/A';
   const statusToTagName = {
     unconfirmed: 'blue',
     'checked-in': 'green',
     'checked-out': 'silver',
   } as const;
   const tagType = status ? statusToTagName[status as keyof typeof statusToTagName] : undefined;
-  const formattedStatus = status?.replace('-', ' ') || "N/A";
+  const formattedStatus = status?.replace('-', ' ') || 'N/A';
 
   return (
     <Table.Row>
@@ -69,8 +63,8 @@ function BookingRow({
 
       <Stacked>
         <span>
-          {isToday(new Date(start_date || '')) ? 'Today' : formatDistanceFromNow(start_date || '')} &rarr;{' '}
-          {num_nights} night stay
+          {isToday(new Date(start_date || '')) ? 'Today' : formatDistanceFromNow(start_date || '')}{' '}
+          &rarr; {num_nights} night stay
         </span>
         <span>
           {format(new Date(start_date || ''), 'MMM dd yyyy')} &mdash;{' '}
@@ -81,6 +75,15 @@ function BookingRow({
       <Tag type={tagType}>{formattedStatus}</Tag>
 
       <Amount>{formatCurrency(total_price)}</Amount>
+
+      <Menus.Menu>
+        <Menus.Toggle id={id} />
+        <Menus.List id={id}>
+          <Menus.Button icon={<HiEye />} onClick={() => navigate(`/bookings/${id}`)}>
+            See details
+          </Menus.Button>
+        </Menus.List>
+      </Menus.Menu>
     </Table.Row>
   );
 }
