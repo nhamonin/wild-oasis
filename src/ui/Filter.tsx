@@ -59,6 +59,8 @@ function Filter<OptionValues extends string>({ filterField, options }: FilterPro
 
   const handleClick = (filterType: OptionValues) => {
     searchParams.set(filterField, filterType);
+    searchParams.delete('page');
+
     updateSearchParams(searchParams, { replace: true });
   };
 

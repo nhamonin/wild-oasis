@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { format, isToday } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { HiArrowDownOnSquare, HiEye } from 'react-icons/hi2';
+import { HiArrowDownOnSquare, HiArrowUpOnSquare, HiEye } from 'react-icons/hi2';
 
 import Tag from '../../ui/Tag';
 import Table from '../../ui/Table';
@@ -9,6 +9,7 @@ import Menus from '../../ui/Menus';
 import { formatCurrency } from '../../utils/helpers';
 import { formatDistanceFromNow } from '../../utils/helpers';
 import { FullBooking } from '../../types';
+import { useCheckOut } from '../check-in-out/hooks/useCheckOut';
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -40,6 +41,7 @@ const Amount = styled.div`
 function BookingRow({ booking }: { booking: FullBooking }) {
   const { start_date, end_date, num_nights, total_price, status, guests, cabins, id } = booking;
   const navigate = useNavigate();
+  const { checkOut, isCheckingOut } = useCheckOut();
 
   const guestName = guests?.full_name || 'N/A';
   const email = guests?.email || 'N/A';
@@ -84,8 +86,23 @@ function BookingRow({ booking }: { booking: FullBooking }) {
           </Menus.Button>
 
           {status === 'unconfirmed' && (
-            <Menus.Button icon={<HiArrowDownOnSquare />} onClick={() => navigate(`/check-in/${id}`)}>
+            <Menus.Button
+              icon={<HiArrowDownOnSquare />}
+              onClick={() => navigate(`/check-in/${id}`)}
+            >
               Check in
+            </Menus.Button>
+          )}
+
+          {status === 'checked-in' && (
+            <Menus.Button
+              icon={<HiArrowUpOnSquare />}
+              onClick={() => {
+                checkOut(id);
+              }}
+              disabled={Boolean(isCheckingOut)}
+            >
+              Check out
             </Menus.Button>
           )}
         </Menus.List>
