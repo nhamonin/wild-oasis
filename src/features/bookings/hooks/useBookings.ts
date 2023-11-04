@@ -20,7 +20,7 @@ export function useBookings() {
     ? null
     : { field: sortByValue, method: sortByMethod as 'asc' | 'desc' };
 
-  const page = Number(searchParams.get('page')) || 1;
+  const page = Number(searchParams.get('page')) || 0;
 
   const { isLoading, data, error } = useQuery(
     ['bookings', filter, sortBy, page],
