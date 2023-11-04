@@ -14,10 +14,16 @@ type SortBy = {
   method: 'asc' | 'desc';
 } | null;
 
-export async function getBookings({ filter, sortBy, page }: { filter: Filter; sortBy: SortBy, page: number }) {
-  let query = supabase
-    .from('bookings')
-    .select('*, cabins(*), guests(*)', { count: 'exact' });
+export async function getBookings({
+  filter,
+  sortBy,
+  page,
+}: {
+  filter: Filter;
+  sortBy: SortBy;
+  page: number;
+}) {
+  let query = supabase.from('bookings').select('*, cabins(*), guests(*)', { count: 'exact' });
 
   if (filter !== null) {
     switch (filter.method) {
@@ -144,7 +150,7 @@ export async function updateBooking(id: number, obj: Partial<Booking>) {
   return data;
 }
 
-export async function deleteBooking(id: string) {
+export async function deleteBooking(id: number) {
   // REMEMBER RLS POLICIES
   const { data, error } = await supabase.from('bookings').delete().eq('id', id);
 
