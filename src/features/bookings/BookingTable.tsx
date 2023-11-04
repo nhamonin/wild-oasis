@@ -10,16 +10,16 @@ function BookingTable() {
   const { bookings, count, isLoading } = useBookings();
 
   if (isLoading) {
-    <Spinner />
+    <Spinner />;
   }
 
   if (!bookings?.length) {
-    return <Empty resourceName='bookings' />
+    return <Empty resourceName="bookings" />;
   }
 
   return (
     <Menus>
-      <Table columns="0.6fr 2fr 2.4fr 1.4fr 1fr 3.2rem">
+      <Table $columns="0.6fr 2fr 2.4fr 1.4fr 1fr 3.2rem">
         <Table.Header>
           <div>Cabin</div>
           <div>Guest</div>
@@ -35,7 +35,7 @@ function BookingTable() {
         />
 
         <Table.Footer>
-          <Pagination count={count || 0}/>
+          <Pagination count={count || 0} />
         </Table.Footer>
       </Table>
     </Menus>

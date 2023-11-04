@@ -5,7 +5,7 @@ type ButtonVariation = 'primary' | 'secondary' | 'danger';
 
 type ButtonProps = {
   size?: ButtonSize;
-  variation?: ButtonVariation;
+  $variation?: ButtonVariation;
 };
 
 const sizes = {
@@ -61,13 +61,13 @@ const Button = styled.button<ButtonProps>`
   border: none;
   box-shadow: var(--shadow-sm);
 
-  ${(props) => variations[props.variation || 'primary'] || variations.primary}
+  ${(props) => variations[props.$variation || 'primary'] || variations.primary}
   ${(props) => sizes[props.size || 'medium'] || sizes.medium}
 `;
 
 Button.defaultProps = {
   size: 'medium',
-  variation: 'primary',
+  $variation: 'primary',
 };
 
 export default Button;

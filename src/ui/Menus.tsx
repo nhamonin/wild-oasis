@@ -31,7 +31,7 @@ const StyledToggle = styled.button`
 `;
 
 type StyledListProps = {
-  position: {
+  $position: {
     x: number;
     y: number;
   };
@@ -44,8 +44,8 @@ const StyledList = styled.ul<StyledListProps>`
   box-shadow: var(--shadow-md);
   border-radius: var(--border-radius-md);
 
-  right: ${(props) => props.position.x}px;
-  top: ${(props) => props.position.y}px;
+  right: ${(props) => props.$position.x}px;
+  top: ${(props) => props.$position.y}px;
 `;
 
 const StyledButton = styled.button`
@@ -77,27 +77,27 @@ type MenusContextType = {
   openId: number;
   close: () => void;
   open: (id: number) => void;
-  position: { x: number; y: number };
-  setPosition: (position: { x: number; y: number }) => void;
+  $position: { x: number; y: number };
+  setPosition: ($position: { x: number; y: number }) => void;
 };
 
 const MenusContext = createContext<MenusContextType>({
   openId: 0,
   close: () => {},
   open: () => {},
-  position: { x: 0, y: 0 },
+  $position: { x: 0, y: 0 },
   setPosition: () => {},
 });
 
 function Menus({ children }: { children: React.ReactNode }) {
   const [openId, setOpenId] = useState<number>(0);
-  const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [$position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const close = () => setOpenId(0);
   const open = (id: number) => setOpenId(id);
 
   return (
-    <MenusContext.Provider value={{ openId, close, open, position, setPosition }}>
+    <MenusContext.Provider value={{ openId, close, open, $position, setPosition }}>
       {children}
     </MenusContext.Provider>
   );
@@ -129,7 +129,7 @@ function Toggle({ id }: { id: number }) {
 }
 
 function List({ id, children }: { id: number; children: React.ReactNode }) {
-  const { openId, position, close } = useContext(MenusContext);
+  const { openId, $position, close } = useContext(MenusContext);
 
   const ref = useGeneralClose<HTMLUListElement>(close);
 
@@ -138,7 +138,7 @@ function List({ id, children }: { id: number; children: React.ReactNode }) {
   }
 
   return createPortal(
-    <StyledList position={position} ref={ref}>
+    <StyledList $position={$position} ref={ref}>
       {children}
     </StyledList>,
     document.body

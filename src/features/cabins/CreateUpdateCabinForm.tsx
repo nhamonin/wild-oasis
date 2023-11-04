@@ -132,7 +132,7 @@ function CreateUpdateCabinForm({ cabinToUpdate = {}, onClose }: CreateCabinFormP
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset" disabled={isWorking} onClick={onClose}>
+        <Button $variation="secondary" type="reset" disabled={isWorking} onClick={onClose}>
           Cancel
         </Button>
         <Button disabled={isWorking}>{isUpdateSession ? 'Update' : 'Create new'} cabin</Button>
