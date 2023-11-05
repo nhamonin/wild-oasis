@@ -1,4 +1,9 @@
 import styled from 'styled-components';
+import { PieChart, ResponsiveContainer, Pie, Cell, Legend, Tooltip } from 'recharts';
+
+import { useDarkMode } from '../../context/DarkModeContext';
+import Heading from '../../ui/Heading';
+import { Booking } from '../../types';
 
 const ChartBox = styled.div`
   /* Box */
@@ -104,16 +109,17 @@ const startDataDark = [
   },
 ];
 
-function prepareData(startData, stays) {
-  // A bit ugly code, but sometimes this is what it takes when working with real data 😅
+type DurationDataItem = { duration: string; value: number; color: string };
+type DurationData = DurationDataItem[];
 
-  function incArrayValue(arr, field) {
+function prepareData(startData: DurationData, stays: Booking[]) {
+  function incArrayValue(arr: DurationData, field: DurationDataItem['duration']) {
     return arr.map((obj) => (obj.duration === field ? { ...obj, value: obj.value + 1 } : obj));
   }
 
   const data = stays
-    .reduce((arr, cur) => {
-      const num = cur.numNights;
+    .reduce((arr: DurationData, cur) => {
+      const num = cur.num_nights || 0;
       if (num === 1) return incArrayValue(arr, '1 night');
       if (num === 2) return incArrayValue(arr, '2 nights');
       if (num === 3) return incArrayValue(arr, '3 nights');
@@ -128,3 +134,47 @@ function prepareData(startData, stays) {
 
   return data;
 }
+
+const DurationChart = ({ confirmedStays }: { confirmedStays: Booking[] | undefined }) => {
+  const { isDarkMode } = useDarkMode();
+  const startData = isDarkMode ? startDataDark : startDataLight;
+
+  if (!confirmedStays) return null;
+
+  const data = prepareData(startData, confirmedStays);
+
+  return (
+    <ChartBox>
+      <Heading as="h2">Stay duration summary</Heading>
+      <ResponsiveContainer width={'100%'} height={240}>
+        <PieChart>
+          <Pie
+            data={data}
+            nameKey="duration"
+            dataKey="value"
+            innerRadius={85}
+            outerRadius={110}
+            paddingAngle={3}
+            cx={'40%'}
+            cy={'50%'}
+            fill="#8884d8"
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend
+            verticalAlign="middle"
+            align="right"
+            width={150}
+            iconSize={15}
+            iconType="circle"
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </ChartBox>
+  );
+};
+
+export default DurationChart;

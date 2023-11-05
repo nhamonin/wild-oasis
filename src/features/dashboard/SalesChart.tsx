@@ -68,9 +68,16 @@ const SalesChart = ({ bookings, numDays }: SalesChartProps) => {
         background: '#fff',
       };
 
+  const startDate = allDates[0] ? format(allDates[0], 'MMM dd yyyy') : '';
+  const endDate = allDates[allDates.length - 1]
+    ? format(allDates[allDates.length - 1], 'MMM dd yyyy')
+    : '';
+
   return (
     <StyledSalesChart>
-      <Heading as="h2">Sales</Heading>
+      <Heading as="h2">
+        Sales from {startDate} &mdash; {endDate}
+      </Heading>
 
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart data={data}>
