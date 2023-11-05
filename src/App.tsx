@@ -16,6 +16,7 @@ import CheckIn from './pages/CheckIn';
 import AppLayout from './ui/AppLayout';
 import GlobalStyles from './styles/GlobalStyles';
 import ProtectedRoute from './ui/ProtectedRoute';
+import { DarkModeProvider } from './context/DarkModeContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,7 +37,9 @@ function App() {
           <Route
             element={
               <ProtectedRoute>
-                <AppLayout />
+                <DarkModeProvider>
+                  <AppLayout />
+                </DarkModeProvider>
               </ProtectedRoute>
             }
           >
