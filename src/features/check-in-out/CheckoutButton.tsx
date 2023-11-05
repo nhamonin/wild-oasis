@@ -1,8 +1,11 @@
 import Button from '../../ui/Button';
+import { useCheckOut } from './hooks/useCheckOut';
 
-function CheckoutButton({ bookingId }) {
+function CheckoutButton({ bookingId }: { bookingId: number }) {
+  const { checkOut, isCheckingOut } = useCheckOut();
+
   return (
-    <Button $variation="primary" size="small">
+    <Button size="small" onClick={() => checkOut(bookingId)} disabled={isCheckingOut}>
       Check out
     </Button>
   );
