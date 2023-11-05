@@ -20,7 +20,7 @@ export function useBookings() {
     ? null
     : { field: sortByValue, method: sortByMethod as 'asc' | 'desc' };
 
-  const page = Number(searchParams.get('page')) || 0;
+  const page = Number(searchParams.get('page')) || 1;
 
   const { isLoading, data, error } = useQuery(
     ['bookings', filter, sortBy, page],
@@ -35,7 +35,7 @@ export function useBookings() {
     }
   );
 
-  const pageCount = Math.ceil(data?.count || 1 / PAGE_SIZE);
+  const pageCount = Math.ceil((data?.count || 1) / PAGE_SIZE);
 
   if (page < pageCount) {
     queryClient.prefetchQuery(['bookings', filter, sortBy, page + 1], () =>

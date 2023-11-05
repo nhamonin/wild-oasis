@@ -70,7 +70,7 @@ type PaginationProps = {
 
 function Pagination({ count }: PaginationProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 0;
+  const currentPage = Number(searchParams.get('page')) || 1;
   const pageCount = Math.ceil(count / PAGE_SIZE);
 
   function prevPage() {
