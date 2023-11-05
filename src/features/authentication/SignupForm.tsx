@@ -4,6 +4,7 @@ import Button from '../../ui/Button';
 import Form from '../../ui/Form';
 import FormRow from '../../ui/FormRow';
 import Input from '../../ui/Input';
+import { useSignup } from './hooks/useSignup';
 
 type FormValues = {
   fullName: string;
@@ -91,31 +92,41 @@ const resolver: Resolver<FormValues> = async (values) => {
 };
 
 function SignupForm() {
-  const { formState, handleSubmit, register } = useForm<FormValues>({ resolver });
+  const { signup, isLoading } = useSignup();
+  const { formState, handleSubmit, register, reset } = useForm<FormValues>({ resolver });
   const { errors } = formState;
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    signup(data, {
+      onSettled: () => reset(),
+    });
+  };
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow label="Full name" error={errors.fullName?.message}>
-        <Input type="text" id="fullName" {...register('fullName')} />
+        <Input type="text" id="fullName" disabled={isLoading} {...register('fullName')} />
       </FormRow>
 
       <FormRow label="Email address" error={errors?.email?.message}>
-        <Input type="email" id="email" {...register('email')} />
+        <Input type="email" id="email" disabled={isLoading} {...register('email')} />
       </FormRow>
 
       <FormRow label="Password (min 8 characters)" error={errors?.password?.message}>
-        <Input type="password" id="password" {...register('password')} />
+        <Input type="password" id="password" disabled={isLoading} {...register('password')} />
       </FormRow>
 
       <FormRow label="Repeat password" error={errors?.passwordConfirm?.message}>
-        <Input type="password" id="passwordConfirm" {...register('passwordConfirm')} />
+        <Input
+          type="password"
+          id="passwordConfirm"
+          disabled={isLoading}
+          {...register('passwordConfirm')}
+        />
       </FormRow>
 
       <FormRow>
-        <Button $variation="secondary" type="reset">
+        <Button $variation="secondary" type="reset" disabled={isLoading}>
           Cancel
         </Button>
         <Button>Create new user</Button>
