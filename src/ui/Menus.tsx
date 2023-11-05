@@ -107,6 +107,7 @@ function Toggle({ id }: { id: number }) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
 
   function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
     const target = e.target as Element;
     const buttonElement = target.closest('button');
 

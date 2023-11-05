@@ -19,10 +19,10 @@ export function useGeneralClose<T extends HTMLElement>(onClose: () => void) {
       if (ref.current && !ref.current.contains(event.target as Node)) onClose();
     }
 
-    document.addEventListener('click', onClickOutside, { capture: true });
+    document.addEventListener('click', onClickOutside);
 
     return () => {
-      document.removeEventListener('click', onClickOutside, { capture: true });
+      document.removeEventListener('click', onClickOutside);
     };
   }, [onClose]);
 
