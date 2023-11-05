@@ -23,7 +23,8 @@
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.11.0",
     "react-router-dom": "^6.16.0",
-    "styled-components": "^6.0.8"
+    "styled-components": "^6.0.8",
+    "supabase": "^1.110.1"
   },
   "devDependencies": {
     "@tanstack/react-query-devtools": "^4.36.1",

@@ -65,12 +65,14 @@ export interface Database {
           {
             foreignKeyName: "bookings_cabin_id_fkey"
             columns: ["cabin_id"]
+            isOneToOne: false
             referencedRelation: "cabins"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "bookings_guest_id_fkey"
             columns: ["guest_id"]
+            isOneToOne: false
             referencedRelation: "guests"
             referencedColumns: ["id"]
           }
