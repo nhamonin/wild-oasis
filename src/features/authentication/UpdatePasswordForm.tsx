@@ -1,53 +1,90 @@
-import { useForm } from 'react-hook-form';
+import { useForm, SubmitHandler, Resolver } from 'react-hook-form';
+
 import Button from '../../ui/Button';
 import Form from '../../ui/Form';
 import FormRow from '../../ui/FormRow';
 import Input from '../../ui/Input';
+import { useUpdateUser } from './hooks/useUpdateUser';
 
-import { useUpdateUser } from './useUpdateUser';
+type FormValues = {
+  password: string;
+  passwordConfirm: string;
+};
+
+const resolver: Resolver<FormValues> = async (values) => {
+  let errors = {};
+  if (!values.password) {
+    errors = {
+      ...errors,
+      password: {
+        type: 'required',
+        message: 'This field is required.',
+      },
+    };
+  }
+
+  if (values.password.length < 8) {
+    errors = {
+      ...errors,
+      password: {
+        type: 'validate',
+        message: 'The password must be at least 8 characters long.',
+      },
+    };
+  }
+
+  if (!values.passwordConfirm) {
+    errors = {
+      ...errors,
+      passwordConfirm: {
+        type: 'required',
+        message: 'This field is required.',
+      },
+    };
+  }
+
+  if (values.password !== values.passwordConfirm) {
+    errors = {
+      ...errors,
+      passwordConfirm: {
+        type: 'validate',
+        message: 'The passwords do not match.',
+      },
+    };
+  }
+
+  return {
+    values: Object.keys(errors).length > 0 ? {} : values,
+    errors: errors,
+  };
+};
 
 function UpdatePasswordForm() {
-  const { register, handleSubmit, formState, getValues, reset } = useForm();
+  const { updateUser, isUpdating } = useUpdateUser();
+  const { formState, handleSubmit, register, reset } = useForm<FormValues>({ resolver });
   const { errors } = formState;
 
-  const { updateUser, isUpdating } = useUpdateUser();
-
-  function onSubmit({ password }) {
-    updateUser({ password }, { onSuccess: reset });
-  }
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    updateUser({ password: data.password }, { onSettled: () => reset() });
+  };
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <FormRow label="Password (min 8 characters)" error={errors?.password?.message}>
-        <Input
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          disabled={isUpdating}
-          {...register('password', {
-            required: 'This field is required',
-            minLength: {
-              value: 8,
-              message: 'Password needs a minimum of 8 characters',
-            },
-          })}
-        />
+      <FormRow label="New password (min 8 chars)" error={errors?.password?.message}>
+        <Input type="password" id="password" disabled={isUpdating} {...register('password')} />
       </FormRow>
 
       <FormRow label="Confirm password" error={errors?.passwordConfirm?.message}>
         <Input
           type="password"
-          autoComplete="new-password"
           id="passwordConfirm"
           disabled={isUpdating}
-          {...register('passwordConfirm', {
-            required: 'This field is required',
-            validate: (value) => getValues().password === value || 'Passwords need to match',
-          })}
+          {...register('passwordConfirm')}
         />
       </FormRow>
+
       <FormRow>
-        <Button onClick={reset} type="reset" $variation="secondary">
+        <Button $variation="secondary" type="reset" disabled={isUpdating} onClick={() => reset()}>
           Cancel
         </Button>
         <Button disabled={isUpdating}>Update password</Button>
